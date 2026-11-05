@@ -10,7 +10,8 @@ Nginx를 기반으로 한 간단한 웹 서버를 Docker 컨테이너로 실행�
 - **컨테이너 실행**: `docker run -d -p 9000:80 my-web-app` 명령으로 9000번 포트 개방
 
 ## 3. Docker Hub 이미지 주소
-- 이미지 링크: https://hub.docker.com/r/본인의아이디/my-web-app
+- 이미지 링크: https://hub.docker.com/r/kungfupanda1017
+/my-web-app
 
 ## 4. 실행 결과 (터미널 로그)
 ```
