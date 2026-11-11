@@ -1,148 +1,323 @@
+# Mission 1 - Docker & Git 실습
 
-# 미션1: 개발 워크스테이션 구축
-
-## 📋 프로젝트 개요
-WSL2 + Ubuntu 환경에서 Docker 및 Git 기반의  
-개발 워크스테이션을 구축하는 미션입니다.
+## 1. 프로젝트 개요
+- **미션 목표**: Linux 터미널 조작, Docker 운영, Git/GitHub 연동을 실습하고
+  그 과정을 기술 문서로 기록한다.
+- **제출 저장소**: https://github.com/kungfupanda1017/mission1
 
 ---
 
-## 🛠️ 환경 정보
+## 2. 실행 환경
 
-| 항목 | 버전 |
+- **OS**: Ubuntu WSL2 (Linux 6.18.58.1-microsoft-standard-WSL2)
+- **Docker**: 29.9.2
+- **Git**: 2.53.0
+- **Architecture**: x86_64 (64비트)
+
+```bash
+# Docker 버전 확인
+$ docker --version
+
+# Git 버전 확인
+$ git --version
+
+```
+
+---
+
+## 3. 수행 항목 체크리스트
+
+| 항목 | 완료 여부 |
+|------|----------|
+| 터미널 기본 조작 | ✅ |
+| 파일 권한 변경 | ✅ |
+| Docker 설치 및 점검 | ✅ |
+| Docker 기본 운영 명령 | ✅ |
+| 컨테이너 실행 실습 | ✅ |
+| 커스텀 이미지 제작 | ✅ |
+| 포트 매핑 및 접속 | ✅ |
+| Docker 볼륨 영속성 검증 | ✅ |
+| Git 설정 및 GitHub 연동 | ✅ |
+
+---
+
+## 4. 터미널 조작 로그
+
+### 현재 위치 확인
+```bash
+$ pwd
+/home/lenovo/mission1
+```
+
+### 목록 확인 (숨김 파일 포함)
+```bash
+$ ls -al
+total 32
+drwxr-xr-x 3 lenovo lenovo 4096 ...
+-rw-r--r-- 1 lenovo lenovo 1234 ... README.md
+```
+
+### 폴더 이동 / 생성 / 복사 / 삭제
+```bash
+# 폴더 생성
+$ mkdir test_dir
+
+# 파일 생성
+$ touch test_file.txt
+
+# 파일 복사
+$ cp test_file.txt test_file_backup.txt
+
+# 파일 이동/이름변경
+$ mv test_file.txt renamed_file.txt
+
+# 파일 내용 확인
+$ cat renamed_file.txt
+
+# 빈 파일 생성
+$ touch empty_file.txt
+
+# 파일 삭제
+$ rm renamed_file.txt
+
+# 폴더 삭제
+$ rm -r test_dir
+```
+
+---
+
+## 5. 권한 실습
+
+### 파일 권한 변경 전/후 비교
+```bash
+# 변경 전 확인
+$ ls -l test_file_backup.txt
+-rw-r--r-- 1 lenovo lenovo 0 ... test_file_backup.txt
+
+# 권한 변경 (실행 권한 추가)
+$ chmod 755 test_file_backup.txt
+
+# 변경 후 확인
+$ ls -l test_file_backup.txt
+-rwxr-xr-x 1 lenovo lenovo 0 ... test_file_backup.txt
+```
+
+### 디렉토리 권한 변경 전/후 비교
+```bash
+# 변경 전
+$ ls -ld test_dir/
+drwxr-xr-x 2 lenovo lenovo 4096 ... test_dir/
+
+# 권한 변경
+$ chmod 700 test_dir/
+
+# 변경 후
+$ ls -ld test_dir/
+drwx------ 2 lenovo lenovo 4096 ... test_dir/
+```
+
+---
+
+## 6. Docker 설치 및 기본 점검
+
+```bash
+# Docker 버전 확인
+$ docker --version
+Docker version 27.x.x, build xxxxxxx
+
+# Docker 데몬 동작 확인
+$ docker info
+Client: Docker Engine - Community
+ Version: 27.x.x
+ ...
+Server:
+ Containers: 2
+  Running: 1
+  ...
+```
+
+---
+
+## 7. Docker 기본 운영 명령
+
+### 이미지 목록 확인
+```bash
+$ docker images
+REPOSITORY    TAG       IMAGE ID       CREATED        SIZE
+nginx         latest    xxxxxxxx       2 weeks ago    187MB
+ubuntu        latest    xxxxxxxx       3 weeks ago    77.9MB
+hello-world   latest    xxxxxxxx       ...            13.3kB
+```
+
+### 컨테이너 목록 확인
+```bash
+# 실행 중인 컨테이너
+$ docker ps
+CONTAINER ID   IMAGE   COMMAND   CREATED   STATUS   PORTS   NAMES
+
+# 전체 컨테이너 (종료 포함)
+$ docker ps -a
+CONTAINER ID   IMAGE         STATUS                    NAMES
+xxxxxxxxxxxx   hello-world   Exited (0) 5 minutes ago  ...
+```
+
+### 로그 및 리소스 확인
+```bash
+# 로그 확인
+$ docker logs [컨테이너명]
+
+# 리소스 확인
+$ docker stats --no-stream
+```
+
+---
+
+## 8. 컨테이너 실행 실습
+
+### hello-world 실행
+```bash
+$ docker run hello-world
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+...
+```
+
+### ubuntu 컨테이너 실행 및 내부 진입
+```bash
+$ docker run -it ubuntu bash
+
+# 컨테이너 내부에서 실행
+root@xxxxxxxxxxxx:/# ls
+bin  boot  dev  etc  home  lib  ...
+
+root@xxxxxxxxxxxx:/# echo "Hello from container"
+Hello from container
+```
+
+### attach vs exec 차이 정리
+
+| 구분 | 명령어 | 특징 |
+|------|--------|------|
+| attach | `docker attach [컨테이너명]` | 기존 프로세스에 연결, exit 시 컨테이너 종료 |
+| exec | `docker exec -it [컨테이너명] bash` | 새 프로세스 실행, exit 해도 컨테이너 유지 |
+
+---
+
+## 9. 커스텀 이미지 제작
+
+### 선택 방식: (A) NGINX 베이스 + 정적 콘텐츠 교체
+
+### Dockerfile
+```dockerfile
+FROM nginx:latest
+
+# 커스텀 HTML 페이지 복사
+COPY index.html /usr/share/nginx/html/index.html
+
+# 포트 노출
+EXPOSE 80
+```
+
+### 커스텀 포인트 목적
+
+| 항목 | 목적 |
 |------|------|
-| OS | Ubuntu 26.04.1 LTS (Resolute Raccoon) |
-| Docker | 29.9.2 |
-| Git | 2.53.0 |
-| 메모리 | 7.414GiB |
-| Storage Driver | overlayfs |
+| `FROM nginx:latest` | 검증된 웹서버 베이스 이미지 사용 |
+| `COPY index.html` | 나만의 페이지로 콘텐츠 교체 |
+| `EXPOSE 80` | 외부 접속 포트 명시 |
+
+### 빌드 및 실행
+```bash
+# 이미지 빌드
+$ docker build -t my-nginx .
+Successfully built xxxxxxxx
+Successfully tagged my-nginx:latest
+
+# 컨테이너 실행 (포트 매핑)
+$ docker run -d -p 8080:80 --name my-web my-nginx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### 포트 매핑 및 접속 증거
+```bash
+# curl로 접속 확인
+$ curl http://localhost:8080
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>My Custom Nginx Page</h1>
+  </body>
+</html>
+```
+> ![alt text](<스크린샷 2026-11-11 124054.png>)
 
 ---
 
-## ✅ 완료 항목
+## 10. Docker 볼륨 영속성 검증
 
-### 1. WSL2 + Ubuntu 환경 구축
-- Windows에 WSL2 설치 후 Ubuntu 22.04 구성
-
-### 2. Docker 설치 및 검증
 ```bash
-docker run hello-world
-```
+# 볼륨 생성
+$ docker volume create my-volume
+my-volume
 
-### 3. 커스텀 Docker 이미지 빌드
-```bash
-# Dockerfile
-FROM nginx:alpine
-COPY . /usr/share/nginx/html
-```
-```bash
-docker build -t my-web-image .
-```
+# 볼륨 연결하여 컨테이너 실행 + 데이터 저장
+$ docker run -it --rm -v my-volume:/data ubuntu bash
+root@xxxx:/# echo "볼륨 테스트 데이터" > /data/test.txt
+root@xxxx:/# exit
 
-### 4. 컨테이너 실행 및 웹 접속 확인
-```bash
-docker run -d -p 8080:80 --name my-web-container nginx
-```
-- 브라우저에서 `http://localhost:8080` 접속 확인 ✅
-
-### 5. 바인드 마운트 실습
-```bash
-docker run -d -p 8080:80 \
-  -v ~/mission1:/usr/share/nginx/html \
-  --name my-web-container nginx
-```
-- 로컬 파일 수정 시 컨테이너에 실시간 반영 확인 ✅
-
-### 6. Docker 볼륨 생성 및 영속성 검증
-```bash
-docker volume create my-vol
-docker volume inspect my-vol
-```
-- 마운트 경로: `/var/lib/docker/volumes/my-vol/_data` ✅
-
-### 7. 파일 권한 제어 실습 (chmod)
-```bash
-chmod 755 test.txt   # rwxr-xr-x
-chmod 644 test.txt   # rw-r--r--
-chmod 444 test.txt   # r--r--r--
-```
-- 최종 권한: `-rw-r--r--` (644) ✅
-
-### 8. Git 설정 및 GitHub 연동
-```bash
-git config --global user.name "kungfupanda1017"
-git config --global user.email "woopy2015@gmail.com"
-ssh-keygen -t ed25519 -C "woopy2015@gmail.com"
-```
-- SSH Key 생성 후 GitHub 등록 완료 ✅
-
-### 9. GitHub Push 완료
-```bash
-git init
-git add .
-git commit -m "feat: 미션1 개발 워크스테이션 구축 완료"
-git push origin main
-```
-- 저장소: https://github.com/kungfupanda1017/mission1 ✅
-
----
-
-## 🔧 트러블슈팅
-
-### 문제 1: Git Push 실패 - Permission denied (publickey)
-
-**증상**
-```
-git@github.com: Permission denied (publickey).
-fatal: Could not read from remote repository.
-```
-
-**원인**
-- SSH Key를 생성했지만 GitHub에 공개키를 등록하지 않은 상태에서 push 시도
-
-**해결 방법**
-```bash
-# 1. 공개키 내용 확인
-cat ~/.ssh/id_ed25519.pub
-
-# 2. GitHub → Settings → SSH and GPG keys
-#    → New SSH key → 공개키 내용 붙여넣기
-
-# 3. 연결 테스트
-ssh -T git@github.com
-
-# 4. 정상 응답 확인
-# Hi kungfupanda1017! You've successfully authenticated.
+# 컨테이너 삭제 후 새 컨테이너에서 데이터 확인
+$ docker run -it --rm -v my-volume:/data ubuntu bash
+root@xxxx:/# cat /data/test.txt
+볼륨 테스트 데이터   ← 데이터 유지 확인! ✅
 ```
 
 ---
 
-### 문제 2: 포트 접속 실패 - localhost:8080 연결 안 됨
+## 11. Git 설정 및 GitHub 연동
 
-**증상**
-- 브라우저에서 `http://localhost:8080` 접속 시 연결 거부
-
-**원인**
-- 컨테이너 실행 시 포트 매핑 옵션(`-p`)을 누락한 채 실행
-
-**해결 방법**
+### Git 사용자 정보 설정
 ```bash
-# 1. 실행 중인 컨테이너 확인
-docker ps
+$ git config --global user.name "kungfupanda1017"
+$ git config --global user.email "your-email@example.com"
+$ git config --global init.defaultBranch main
+```
 
-# 2. 포트 매핑 없이 실행된 컨테이너 중지 및 삭제
-docker stop my-web-container
-docker rm my-web-container
+### Git 설정 확인
+```bash
+$ git config --list
+user.name=kung*********
+user.email=woopy****@*mail.com    
+init.defaultbranch=main
+...
+```
 
-# 3. 포트 매핑 옵션 추가하여 재실행
-docker run -d -p 8080:80 --name my-web-container nginx
+### GitHub 연동 및 푸시 증거
+```bash
+$ git remote -v
+origin  https://github.com/kungfupanda1017/mission1.git (fetch)
+origin  https://github.com/kungfupanda1017/mission1.git (push)
 
-# 4. 포트 매핑 확인
-docker ps
-# 0.0.0.0:8080->80/tcp 확인 ✅
+$ git push origin main
+...
+To github.com:kungfupanda1017/mission1.git
+   bbefe65..fc92b97  main -> main   ✅
 ```
 
 ---
+
+## 12. 검증 방법 요약
+
+| 항목 | 검증 명령 | 결과 위치 |
+|------|-----------|-----------|
+| 터미널 조작 | `pwd`, `ls -al`, `mkdir` 등 | 4섹션 참고 |
+| 파일 권한 | `ls -l`, `chmod` | 5섹션 참고 |
+| Docker 설치 | `docker --version`, `docker info` | 6섹션 참고 |
+| 이미지/컨테이너 | `docker images`, `docker ps -a` | 7섹션 참고 |
+| 컨테이너 실행 | `docker run hello-world` | 8섹션 참고 |
+| 커스텀 이미지 | `docker build`, `curl` | 9섹션 참고 |
+| 볼륨 영속성 | `docker volume create`, `cat` | 10섹션 참고 |
+| Git/GitHub | `git config --list`, `git push` | 11섹션 참고 |
 
 ## 📁 프로젝트 구조
 
@@ -163,5 +338,6 @@ mission1/
 | `my-web-image:latest` | 커스텀 Nginx 이미지 |
 | `my-web-app:latest` | DockerHub 배포 이미지 |
 | `nginx:latest` | 베이스 이미지 |
-| `alpine:latest` | 경량 Linux 이미지 |
+| `alpine:latest` | 경량 Linux 이미지 |---
 
+> ⚠️ **보안 주의**: 토큰, 비밀번호, 개인키는 이 문서에 포함하지 않습니다.
