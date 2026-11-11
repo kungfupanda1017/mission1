@@ -1,19 +1,4 @@
-모든 정보 확인 완료! 이제 README.md 작성할게요! 🎉
 
-아래 내용을 복사해서 적용하세요:
-
----
-
-**① 먼저 README.md 파일 열기:**
-```bash
-code ~/mission1/README.md
-```
-
-**② 아래 내용 전체 복사 후 붙여넣기:**
-
----
-
-```markdown
 # 미션1: 개발 워크스테이션 구축
 
 ## 📋 프로젝트 개요
@@ -180,18 +165,3 @@ mission1/
 | `nginx:latest` | 베이스 이미지 |
 | `alpine:latest` | 경량 Linux 이미지 |
 
----
-
-## 👤 작성자
-- GitHub: [@kungfupanda1017](https://github.com/kungfupanda1017)
-- 완료일: 2026년 11월 11일
-```
-
----
-
-**③ 저장 후 GitHub에 최종 Push:**
-```bash
-cd ~/mission1
-git add README.md
-git commit -m "docs: README.md 작성 완료"
-git push origin main
