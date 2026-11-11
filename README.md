@@ -123,7 +123,7 @@ drwx------ 2 lenovo lenovo 4096 ... test_dir/
 ```bash
 # Docker 버전 확인
 $ docker --version
-Docker version 27.x.x, build xxxxxxx
+Docker version 29.9.2
 
 # Docker 데몬 동작 확인
 $ docker info
@@ -250,7 +250,7 @@ $ curl http://localhost:8080
   </body>
 </html>
 ```
-> ![alt text](<스크린샷 2026-11-11 124054.png>)
+> ![접속 화면](스크린샷%202026-11-11%20124054.png)
 
 ---
 
