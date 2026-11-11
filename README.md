@@ -194,6 +194,24 @@ bin  boot  dev  etc  home  lib  ...
 root@xxxxxxxxxxxx:/# echo "Hello from container"
 Hello from container
 ```
+### 8-2. 동일 이미지 다중 포트 실습
+
+**목표:** 같은 이미지를 두 포트에 배포하여 동일한 결과 확인
+
+#### 실습 과정
+
+| 단계 | 명령어 | 설명 |
+|------|--------|------|
+| 1 | `docker stop nginx-test2` | 기존 컨테이너 중지 |
+| 2 | `docker rm nginx-test2` | 기존 컨테이너 삭제 |
+| 3 | `docker run -d -p 8081:80 --name nginx-test2 my-web-image:latest` | 동일 이미지로 재실행 |
+
+#### 실행 결과
+
+| 접속 주소 | 사용 이미지 | 출력 내용 |
+|-----------|-------------|-----------|
+| localhost:8080 | my-web-image:latest | Hello from my Docker container! |
+| localhost:8081 | my-web-image:latest | Hello from my Docker container! |
 
 ### attach vs exec 차이 정리
 
