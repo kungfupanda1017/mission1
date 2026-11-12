@@ -1,25 +1,4 @@
-## 가독성 체크 결과 📋
 
-전체 검토했습니다. 수정 포인트 먼저 정리할게요.
-
----
-
-## 발견된 문제점
-
-| 위치 | 문제 | 수정 방향 |
-|------|------|-----------|
-| 5섹션 | 권한 원리 설명이 표 없이 날것으로 삽입됨 | 마크다운 표로 정리 |
-| 9섹션 | 포트 매핑 원리/절대경로 설명이 커스텀 이미지 섹션 안에 섞임 | 10-1로 이동 |
-| 10섹션 | 코드블록 닫힘(```) 누락 | 수정 |
-| 10-1섹션 | 이미지vs컨테이너만 있고 나머지 원리 내용 없음 | 내용 보완 |
-| 심층인터뷰 | 말로 준비하므로 전체 제거 | 삭제 |
-| 전체 | 섹션 번호 체계 정리 필요 | 통일 |
-
----
-
-## ✅ 최종 확정본 전체
-
-```markdown
 # Mission 1 - Docker & Git 실습
 
 ## 1. 프로젝트 개요
@@ -435,6 +414,7 @@ Docker 설치	docker --version, docker info	6섹션 참고
 포트 매핑	docker run -p, curl	10섹션 참고
 볼륨 영속성	docker volume create, cat	11섹션 참고
 Git/GitHub	git config --list, git push	13섹션 참고
+
 📁 프로젝트 구조
 code
 📋 복사
@@ -443,6 +423,7 @@ mission1/
 ├── index.html       # 웹 페이지 (Hello from my Docker container!)
 ├── test.txt         # chmod 실습용 파일
 └── README.md        # 프로젝트 문서
+
 🐳 Docker 이미지 목록
 이미지	용도
 my-web-image:latest	커스텀 Nginx 이미지
